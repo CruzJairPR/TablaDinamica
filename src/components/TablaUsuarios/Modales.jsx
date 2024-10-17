@@ -6,6 +6,7 @@ export function UserEditModal({ open, onClose, user, onSave }) {
     nombre: "",
     correo: "",
     rol: "",
+    password: "",
   });
 
   useEffect(() => {
@@ -14,7 +15,9 @@ export function UserEditModal({ open, onClose, user, onSave }) {
         nombre: user.nombre || "",
         correo: user.correo || "",
         rol: user.rol || "",
+        password: user.password || "",
       });
+      console.log("User data loaded:", user);
     }
   }, [user]);
 
@@ -24,11 +27,15 @@ export function UserEditModal({ open, onClose, user, onSave }) {
       ...prev,
       [name]: value,
     }));
+    console.log(`Field changed: ${name} = ${value}`);
   };
 
   const handleSubmit = () => {
-    onSave({ ...user, ...formData });
-    onClose();
+    if (onSave) {
+      console.log("Form submitted with data:", formData);
+      onSave({ ...user, ...formData });  
+    }
+    onClose();  
   };
 
   return (
@@ -39,13 +46,15 @@ export function UserEditModal({ open, onClose, user, onSave }) {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 400,
+          width: { xs: '90%', sm: 400 },
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
           display: "flex",
           flexDirection: "column",
           gap: 2,
+          borderRadius: "8px",
+          border: "2px solid #000"
         }}
       >
         <Typography variant="h6" component="h2">
@@ -73,25 +82,40 @@ export function UserEditModal({ open, onClose, user, onSave }) {
           onChange={handleChange}
           fullWidth
         />
+        <TextField
+          label="Contraseña"
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          fullWidth
+        />
 
-        <Box display="flex" justifyContent="space-between">
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <Button
+            variant="contained"
+            style={{
+              backgroundColor: "red",
+              color: "white",
+              marginRight: "15px",
+            }}
+            onClick={onClose}
+          >
+            Cancelar
+          </Button>
           <Button variant="contained" color="primary" onClick={handleSubmit}>
             Guardar
-          </Button>
-          <Button  variant="contained"
-            style={{ backgroundColor: "red", color: "white" }}
-            onClick={onClose}>
-            Cancelar
           </Button>
         </Box>
       </Box>
     </Modal>
   );
 }
-
 export const ConfirmDeleteModal = ({ open, onClose, userId, onConfirm }) => {
   const handleConfirm = () => {
-    onConfirm(userId);
+    if (userId) {  
+      onConfirm(userId);
+    }
     onClose();
   };
 
@@ -103,7 +127,7 @@ export const ConfirmDeleteModal = ({ open, onClose, userId, onConfirm }) => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 300,
+          width: { xs: '90%', sm: 300 },
           bgcolor: "white",
           p: 4,
           border: "2px solid #000",
@@ -115,7 +139,7 @@ export const ConfirmDeleteModal = ({ open, onClose, userId, onConfirm }) => {
           ¿Estás seguro de que deseas eliminar este usuario?
         </p>
         <Box display="flex" justifyContent="center" sx={{ marginTop: 2 }}>
-          <Button onClick={onClose} color="primary" sx={{ marginRight: 1 }}>
+          <Button onClick={onClose} variant="contained" color="primary" sx={{ marginRight: 1 }}>
             Cancelar
           </Button>
           <Button

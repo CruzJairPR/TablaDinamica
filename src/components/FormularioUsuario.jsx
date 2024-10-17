@@ -9,7 +9,6 @@ function FormularioUsuario() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Aquí puedes enviar los datos del formulario a tu backend
     console.log('Datos del nuevo usuario:', { nombre, correo, rol });
   };
 

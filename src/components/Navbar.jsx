@@ -65,12 +65,11 @@ const Navbar = () => {
 
   const drawerItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/home" },
-    { text: "Usuarios", icon: <PeopleIcon />, path: "/users" },
+    { text: "Usuarios", icon: <PeopleIcon />, path: "/home" },
     { text: "CrearUsuario", icon: <PersonAddIcon />, path: "/profile" },
   ];
 
-  const DrawerList = (
-    <Box
+  const DrawerList = (    <Box
       sx={{ width: 250 }}
       role="presentation"
       onClick={toggleDrawer(false)}
@@ -94,7 +93,8 @@ const Navbar = () => {
   );
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#0d47a1", boxShadow: 3 }}>
+<Container>
+<AppBar position="static" sx={{ backgroundColor: "#0d47a1", boxShadow: 3 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <IconButton
@@ -159,7 +159,8 @@ const Navbar = () => {
         {DrawerList}
       </Drawer>
     </AppBar>
-  );
+</Container>
+  )
 };
 
 export default Navbar;

@@ -1,40 +1,48 @@
 import React, { useState } from "react";
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import UserSearch from "./TablaUsuarios/UserSearch";
 import CrearUsuarioButton from "./Buttons";
-import ListaUsuariosTitle from "./Typography";
+import TablaTitulo from "./TablaUsuarios/TablaTitulo";
 
 const Header = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    onSearch(event.target.value);
+
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    onSearch(value); 
   };
 
   return (
-    <header className="header">
-      <Container>
-        <div>
-        <div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: "16px",
-    flexWrap: "wrap",
-    marginTop: "10px",
-  }}
->
-  <ListaUsuariosTitle />
-  <div style={{ width: '300px', marginRight: '10px' }}> {/* Agregamos margen derecho */}
-    <UserSearch searchTerm={searchTerm} onSearch={handleSearch} />
-  </div>
-  <CrearUsuarioButton />
-</div>
-        </div>
-     
-</Container>
-    </header>
+    <Container>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent={{ xs: "center", md: "space-between" }}
+        flexDirection={{ xs: "column", md: "row" }}
+        gap={2}
+        sx={{ padding: "16px 0" }}
+      >
+        <Box
+          flexGrow={1}
+          textAlign={{ xs: "center", md: "left" }}
+        >
+          <TablaTitulo />
+        </Box>
+
+        <Box
+          display="flex"
+          alignItems="center"
+          flexDirection={{ xs: "column", md: "row" }}
+          gap={2}
+          width={{ xs: "100%", md: "auto" }}
+          justifyContent={{ xs: "center", md: "flex-end" }}
+        >
+          <UserSearch searchTerm={searchTerm} onSearch={handleSearch} />
+
+          <CrearUsuarioButton />
+        </Box>
+      </Box>
+    </Container>
   );
 };
 

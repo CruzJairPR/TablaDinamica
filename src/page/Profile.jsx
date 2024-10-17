@@ -6,6 +6,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
+import "../components/styles/FormularioUsuario.css";
 
 function FormularioUsuario() {
   const navigate = useNavigate();
@@ -25,27 +26,28 @@ function FormularioUsuario() {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/usuarios",
-        nuevoUsuario,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axios.post("http://localhost:3001/api/usuarios", nuevoUsuario, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       alert("Usuario creado exitosamente");
       navigate("/home");
     } catch (error) {
       console.error("Error al crear el usuario:", error);
-      alert("Error al crear el usuario. Por favor, inténtalo de nuevo."); // Mensaje de error
+      alert("Error al crear el usuario. Por favor, inténtalo de nuevo.");
     }
   };
 
   return (
-    <Container maxWidth="sm">
-      <Typography variant="h4" gutterBottom align="center">
+    <Container maxWidth="sm" className="formulario-container">
+      <Typography
+        variant="h4"
+        gutterBottom
+        align="center"
+        className="formulario-title"
+      >
         Crear Nuevo Usuario
       </Typography>
       <Box
@@ -65,6 +67,7 @@ function FormularioUsuario() {
           onChange={(e) => setNombre(e.target.value)}
           required
           fullWidth
+          className="formulario-input"
         />
         <TextField
           label="Correo"
@@ -74,6 +77,7 @@ function FormularioUsuario() {
           onChange={(e) => setCorreo(e.target.value)}
           required
           fullWidth
+          className="formulario-input"
         />
         <TextField
           label="Rol"
@@ -82,6 +86,7 @@ function FormularioUsuario() {
           onChange={(e) => setRol(e.target.value)}
           required
           fullWidth
+          className="formulario-input"
         />
         <TextField
           label="Contraseña"
@@ -91,29 +96,20 @@ function FormularioUsuario() {
           onChange={(e) => setContrasena(e.target.value)}
           required
           fullWidth
+          className="formulario-input"
         />
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box className="formulario-botones">
           <Button
-            type="button"
-            variant="outlined"
-            sx={{
-              color: "red",
-              borderColor: "red",
-              "&:hover": { borderColor: "darkred", color: "darkred" },
-            }}
-            onClick={() => navigate(-1)} 
+            variant="contained"
+            style={{ backgroundColor: "red", color: "white" }}
+            onClick={() => navigate(-1)}
           >
             Regresar
           </Button>
           <Button
             type="submit"
             variant="contained"
-            color="primary"
-            sx={{
-              py: 1.5,
-              fontSize: "1rem",
-              fontWeight: "bold",
-            }}
+            className="formulario-boton formulario-boton-crear"
           >
             Crear Usuario
           </Button>

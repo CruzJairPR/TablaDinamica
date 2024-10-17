@@ -1,7 +1,13 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom'; 
 
 const CrearUsuarioButton = () => {
+  const navigate = useNavigate(); 
+
+  const handleClick = () => {
+    navigate('/profile'); 
+  };
   return (
     <div>
       <Button
@@ -10,10 +16,10 @@ const CrearUsuarioButton = () => {
         size="medium"
         
         sx={{
-          height: '50px', // Aumenta la altura del botón
-          fontSize: '16px', // Ajusta el tamaño del texto si es necesario
-        }}
-       
+          height: '55px', 
+          fontSize: '16px', 
+          width:'200px'        }}
+          onClick={handleClick}
       >
         Crear Usuario
       </Button>

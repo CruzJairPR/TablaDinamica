@@ -5,9 +5,9 @@ const ListaUsuariosTitle = () => {
   return (
     <div
       style={{
-        height: '50px',  // Altura para igualar el botón
+        height: '55px',  
         display: 'flex',
-        alignItems: 'center',  // Alinea el texto verticalmente al centro
+        alignItems: 'center', 
       }}
     >
       <Typography
@@ -18,7 +18,7 @@ const ListaUsuariosTitle = () => {
           fontWeight: "bold",
         }}
       >
-        Lista de Usuarios
+        Tabla de Usuarios
       </Typography>
     </div>
   );

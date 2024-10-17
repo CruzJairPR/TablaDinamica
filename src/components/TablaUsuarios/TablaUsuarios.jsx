@@ -5,23 +5,21 @@ import {
   Box,
   CircularProgress,
   Alert,
-  Typography,
   Snackbar,
   Button,
 } from "@mui/material";
-import axios from "axios";
-import Switch from "@mui/material/Switch";
 import { UserEditModal, ConfirmDeleteModal } from "../TablaUsuarios/Modales";
+import Switch from "@mui/material/Switch";
+import { useFetchUsuarios } from "../../hook/useUsuarios2";
+import TablaTitulo from "./TablaTitulo";
 import UserSearch from "./UserSearch";
-import { useNavigate } from "react-router-dom";
-
-const API_URL = "http://localhost:3001/api/usuarios";
+import "../styles/Tabla.css";
+import CrearUsuarioButton from "../Buttons";
+import { dataGridEsES } from "./Traducciones";
 
 function TablaUsuarios() {
-  const [rows, setRows] = useState([]);
+  const { rows, loading, error } = useFetchUsuarios();
   const [filteredRows, setFilteredRows] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [editUserModal, setEditUserModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
@@ -30,56 +28,10 @@ function TablaUsuarios() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUsuarios = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(API_URL);
-        setRows(response.data);
-        setFilteredRows(response.data);
-      } catch (error) {
-        setError(`Error al cargar los usuarios: ${error.message}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUsuarios();
-  }, []);
-
-  const handleEstadoChange = async (userId, newStatus) => {
-    setLoading(true);
-    try {
-      const response = await axios.patch(`${API_URL}/${userId}`, {
-        estado: newStatus ? "activo" : "inactivo",
-      });
-      if (response.status === 200) {
-        setRows(
-          rows.map((row) =>
-            row.id === userId
-              ? { ...row, estado: newStatus ? "activo" : "inactivo" }
-              : row
-          )
-        );
-        setFilteredRows(
-          filteredRows.map((row) =>
-            row.id === userId
-              ? { ...row, estado: newStatus ? "activo" : "inactivo" }
-              : row
-          )
-        );
-        setOpenSnackbar(true);
-        setMessage("Estado del usuario actualizado correctamente");
-      }
-    } catch (error) {
-      setError(`Error al actualizar el estado: ${error.message}`);
-      setOpenSnackbar(true);
-      setMessage("Error al actualizar el estado del usuario");
-    } finally {
-      setLoading(false);
-    }
-  };
+    setFilteredRows(rows);
+  }, [rows]);
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -98,108 +50,31 @@ function TablaUsuarios() {
     setEditUserModal(true);
   };
 
-  const handleDeleteUser = async (userId) => {
-    setLoading(true);
-    try {
-      await axios.delete(`${API_URL}/${userId}`);
-      setRows(rows.filter((row) => row.id !== userId));
-      setFilteredRows(filteredRows.filter((row) => row.id !== userId));
-      setOpenSnackbar(true);
-      setMessage("Usuario eliminado correctamente");
-    } catch (error) {
-      setError(`Error al eliminar el usuario: ${error.message}`);
-      setOpenSnackbar(true);
-      setMessage("Error al eliminar el usuario");
-    } finally {
-      setLoading(false);
-      setConfirmDeleteModal(false);
-    }
+  const handleOpenDeleteModal = (userId) => {
+    setUserToDelete(userId);
+    setConfirmDeleteModal(true);
   };
 
-  const validateUser = (user) => {
-    if (!user.nombre || !user.correo || !user.rol) {
-      setOpenSnackbar(true);
-      setMessage("Todos los campos son obligatorios");
-      return false;
-    }
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(user.correo)) {
-      setOpenSnackbar(true);
-      setMessage("El correo no tiene un formato válido");
-      return false;
-    }
-    return true;
+  const handleDeleteUser = (userId) => {
+    const updatedRows = rows.filter((row) => row.id !== userId);
+    setFilteredRows(updatedRows);
+    setMessage("Usuario eliminado exitosamente");
+    setOpenSnackbar(true);
+    setConfirmDeleteModal(false);
   };
 
-  const handleUserUpdate = (updatedUser) => {
-    if (validateUser(updatedUser)) {
-      setRows(
-        rows.map((row) => (row.id === updatedUser.id ? updatedUser : row))
-      );
-      setFilteredRows(
-        filteredRows.map((row) =>
-          row.id === updatedUser.id ? updatedUser : row
-        )
-      );
-      setEditUserModal(false);
-      setOpenSnackbar(true);
-      setMessage("Usuario actualizado correctamente");
-    }
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
   };
 
-  const columns = [
-    { field: "id", headerName: "ID", flex: 1 },
-    { field: "nombre", headerName: "Nombre", flex: 1 },
-    { field: "correo", headerName: "Correo", flex: 1 },
-    { field: "rol", headerName: "Rol", flex: 1 },
-    {
-      field: "estado",
-      headerName: "Estado",
-      flex: 1,
-      renderCell: (params) => (
-        <Switch
-          checked={params.row.estado === "activo"}
-          onChange={(event) =>
-            handleEstadoChange(params.row.id, event.target.checked)
-          }
-          color="primary"
-        />
-      ),
-    },
-    {
-      field: "acciones",
-      headerName: "Acciones",
-      flex: 1,
-      renderCell: (params) => (
-        <Box display="flex" justifyContent="space-between" width="100%">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleEditUser(params.row)}
-          >
-            Editar
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ backgroundColor: "red", color: "white", ml: 1 }}
-            onClick={() => {
-              setUserToDelete(params.row.id);
-              setConfirmDeleteModal(true);
-            }}
-          >
-            Eliminar
-          </Button>
-        </Box>
-      ),
-    },
-  ];
-
-  const handleSelectionModelChange = (newSelection) => {
-    setSelectedRows(newSelection);
-  };
-
-  const handleCreateUser = () => {
-    navigate("/profile");
+  const handleSaveUser = (updatedUser) => {
+    const updatedRows = rows.map((row) =>
+      row.id === currentUser.id ? { ...row, ...updatedUser } : row
+    );
+    setFilteredRows(updatedRows);
+    setEditUserModal(false);
+    setMessage("Usuario actualizado exitosamente");
+    setOpenSnackbar(true);
   };
 
   if (loading) {
@@ -221,116 +96,126 @@ function TablaUsuarios() {
       </Container>
     );
   }
+  const handleEstadoChange = (userId, isActive) => {
+    const updatedRows = filteredRows.map((row) =>
+      row.id === userId
+        ? { ...row, estado: isActive ? "activo" : "inactivo" }
+        : row
+    );
+    setFilteredRows(updatedRows);
+    setMessage(`Usuario ${isActive ? "activado" : "desactivado"} exitosamente`);
+    setOpenSnackbar(true);
+  };
 
   return (
     <Container>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
+        onClose={handleSnackbarClose}
       >
         <Alert
-          onClose={() => setOpenSnackbar(false)}
+          onClose={handleSnackbarClose}
           severity="success"
           sx={{ width: "100%" }}
         >
           {message}
         </Alert>
       </Snackbar>
-      <Box
-  sx={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: "10px",
-    padding: "16px",
-    marginBottom: "10px",
-    backgroundColor: "#f5f5f5",
-    borderRadius: "4px",
-    flexDirection: { xs: "column", sm: "row" }, 
-  }}
->
-  <Typography
-    variant="h4"
-    component="h1"
-    sx={{
-      color: "#1976d2",
-      fontWeight: "bold",
-      whiteSpace: "nowrap",
-      flexGrow: 1,
-      minHeight: "48px",
-    }}
-  >
-    Tabla de Usuarios
-  </Typography>
-
-    <Box
-      sx={{
-        flexGrow: 1,
-        minHeight: "48px", 
-        width: "100%", 
-      }}
-    >
-      <UserSearch searchTerm={searchTerm} onSearch={handleSearch} sx={{ width: "100%" }} />
-    </Box>
-
-    <Button
-      variant="contained"
-      color="primary"
-      size="medium"
-      sx={{ minHeight: "48px", width: "150px" }} 
-      onClick={handleCreateUser}
-    >
-      Crear Usuario
-    </Button>
-  
-</Box>
-
 
       <Box
-        sx={{
-          height: "auto",
-          width: "100%",
-        }}
+        display="flex"
+        alignItems="center"
+        justifyContent={{ xs: "center", md: "space-between" }}
+        flexDirection={{ xs: "column", md: "row" }}
+        gap={2}
+        sx={{ padding: "16px 0" }}
       >
+        <Box flexGrow={1} textAlign={{ xs: "center", md: "left" }}>
+          <TablaTitulo />
+        </Box>
+
+        <Box
+          display="flex"
+          alignItems="center"
+          flexDirection={{ xs: "column", md: "row" }}
+          gap={2}
+          width={{ xs: "100%", md: "auto" }}
+          justifyContent={{ xs: "center", md: "flex-end" }}
+        >
+          <UserSearch searchTerm={searchTerm} onSearch={handleSearch} />
+          <CrearUsuarioButton />
+        </Box>
+      </Box>
+
+      <Box style={{ height: 400, width: "100%" }}>
         <DataGrid
           rows={filteredRows}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          checkboxSelection
-          onSelectionModelChange={handleSelectionModelChange}
-          localeText={{
-            rowsPerPage: "Filas por página",
-            noRowsLabel: "No hay filas disponibles",
-            columnHeaderSortIconLabel: "Ordenar",
-            footerRowSelected: (count) =>
-              count !== 1
-                ? `${count.toLocaleString()} filas seleccionadas`
-                : `${count.toLocaleString()} fila seleccionada`,
+          columns={[
+            { field: "id", headerName: "ID", width: 100 },
+            { field: "nombre", headerName: "Nombre", width: 180 },
+            { field: "correo", headerName: "Correo", width: 200 },
+            { field: "rol", headerName: "Rol", width: 200 },
+            {
+              field: "estado",
+              headerName: "Estado",
+              width: 150,
+              renderCell: (params) => (
+                <Switch
+                  checked={params.row.estado === "activo"}
+                  onChange={(event) =>
+                    handleEstadoChange(params.row.id, event.target.checked)
+                  }
+                  color="primary"
+                />
+              ),
+            },
+            {
+              field: "acciones",
+              headerName: "Acciones",
+              width: 220,
+              renderCell: (params) => (
+                <div>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleEditUser(params.row)}
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    variant="contained"
+                    style={{
+                      backgroundColor: "red",
+                      color: "white",
+                      marginLeft: "10px",
+                    }}
+                    onClick={() => handleOpenDeleteModal(params.row.id)}
+                  >
+                    Eliminar
+                  </Button>
+                </div>
+              ),
+            },
+          ]}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 5, page: 0 },
+            },
           }}
+          pageSizeOptions={[5, 10, 25]}
+          checkboxSelection
+          disableRowSelectionOnClick
+          onRowSelectionModelChange={(ids) => setSelectedRows(ids)}
+          localeText={dataGridEsES}
         />
       </Box>
-      {selectedRows.length > 0 && (
-        <Box sx={{ marginTop: 2 }}>
-          <Typography variant="h6">Filas seleccionadas:</Typography>
-          <ul>
-            {selectedRows.map((id) => {
-              const user = rows.find((row) => row.id === id);
-              return (
-                <li key={id}>
-                  {user ? `${user.nombre} (${user.correo})` : id}
-                </li>
-              );
-            })}
-          </ul>
-        </Box>
-      )}
+
       <UserEditModal
         open={editUserModal}
         onClose={() => setEditUserModal(false)}
         user={currentUser}
-        onSave={handleUserUpdate}
+        onSave={handleSaveUser}
       />
       <ConfirmDeleteModal
         open={confirmDeleteModal}
