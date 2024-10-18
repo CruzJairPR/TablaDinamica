@@ -8,14 +8,20 @@ import {
   Snackbar,
   Button,
 } from "@mui/material";
-import { UserEditModal, ConfirmDeleteModal } from "../TablaUsuarios/Modales";
 import Switch from "@mui/material/Switch";
+//Traductor
+import { dataGridEsES } from "./Traducciones";
+//Modales
+import { UserEditModal, ConfirmDeleteModal } from "../TablaUsuarios/Modales";
+//hook
 import { useFetchUsuarios } from "../../hook/useUsuarios2";
+//componentes
 import TablaTitulo from "./TablaTitulo";
 import UserSearch from "./UserSearch";
-import "../styles/Tabla.css";
 import CrearUsuarioButton from "../Buttons";
-import { dataGridEsES } from "./Traducciones";
+//Estilo
+import "../styles/Tabla.css";
+
 
 function TablaUsuarios() {
   const { rows, loading, error } = useFetchUsuarios();
@@ -99,7 +105,7 @@ function TablaUsuarios() {
   const handleEstadoChange = (userId, isActive) => {
     const updatedRows = filteredRows.map((row) =>
       row.id === userId
-        ? { ...row, estado: isActive ? "activo" : "inactivo" }
+        ? { ...row, estado: isActive } 
         : row
     );
     setFilteredRows(updatedRows);
@@ -150,6 +156,7 @@ function TablaUsuarios() {
 
       <Box style={{ height: 400, width: "100%" }}>
         <DataGrid
+        className="table"
           rows={filteredRows}
           columns={[
             { field: "id", headerName: "ID", width: 100 },
@@ -162,7 +169,7 @@ function TablaUsuarios() {
               width: 150,
               renderCell: (params) => (
                 <Switch
-                  checked={params.row.estado === "activo"}
+                  checked={params.row.estado} // Ahora es un booleano
                   onChange={(event) =>
                     handleEstadoChange(params.row.id, event.target.checked)
                   }

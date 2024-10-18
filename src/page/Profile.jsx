@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
-import "../components/styles/FormularioUsuario.css";
+import { createUsuario } from "../components/TablaUsuarios/usuarioService";
+import { TituloForumlario } from "../components/Typography";
+import { Paper } from "@mui/material";
 
 function FormularioUsuario() {
   const navigate = useNavigate();
@@ -22,16 +22,11 @@ function FormularioUsuario() {
       nombre,
       correo,
       rol,
-      contrasena,
+      pw: contrasena,
     };
 
     try {
-      await axios.post("http://localhost:3001/api/usuarios", nuevoUsuario, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
+      await createUsuario(nuevoUsuario);
       alert("Usuario creado exitosamente");
       navigate("/home");
     } catch (error) {
@@ -41,80 +36,121 @@ function FormularioUsuario() {
   };
 
   return (
-    <Container maxWidth="sm" className="formulario-container">
-      <Typography
-        variant="h4"
-        gutterBottom
-        align="center"
-        className="formulario-title"
-      >
-        Crear Nuevo Usuario
-      </Typography>
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          mt: 3,
-        }}
-      >
-        <TextField
-          label="Nombre"
-          variant="outlined"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          required
-          fullWidth
-          className="formulario-input"
-        />
-        <TextField
-          label="Correo"
-          variant="outlined"
-          type="email"
-          value={correo}
-          onChange={(e) => setCorreo(e.target.value)}
-          required
-          fullWidth
-          className="formulario-input"
-        />
-        <TextField
-          label="Rol"
-          variant="outlined"
-          value={rol}
-          onChange={(e) => setRol(e.target.value)}
-          required
-          fullWidth
-          className="formulario-input"
-        />
-        <TextField
-          label="Contraseña"
-          variant="outlined"
-          type="password"
-          value={contrasena}
-          onChange={(e) => setContrasena(e.target.value)}
-          required
-          fullWidth
-          className="formulario-input"
-        />
-        <Box className="formulario-botones">
-          <Button
-            variant="contained"
-            style={{ backgroundColor: "red", color: "white" }}
-            onClick={() => navigate(-1)}
-          >
-            Regresar
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            className="formulario-boton formulario-boton-crear"
-          >
-            Crear Usuario
-          </Button>
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ padding: 4, borderRadius: 2 }}>
+        <Box display="flex" justifyContent="center" mb={2}>
+          <TituloForumlario />
         </Box>
-      </Box>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            mt: 3,
+          }}
+        >
+          <TextField
+            label="Nombre"
+            variant="outlined"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            required
+            fullWidth
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#3f51b5",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#1e88e5",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1e88e5",
+                },
+              },
+            }}
+          />
+          <TextField
+            label="Correo"
+            variant="outlined"
+            type="email"
+            value={correo}
+            onChange={(e) => setCorreo(e.target.value)}
+            required
+            fullWidth
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#3f51b5",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#1e88e5",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1e88e5",
+                },
+              },
+            }}
+          />
+          <TextField
+            label="Rol"
+            variant="outlined"
+            value={rol}
+            onChange={(e) => setRol(e.target.value)}
+            required
+            fullWidth
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#3f51b5",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#1e88e5",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1e88e5",
+                },
+              },
+            }}
+          />
+          <TextField
+            label="Contraseña"
+            variant="outlined"
+            type="password"
+            value={contrasena}
+            onChange={(e) => setContrasena(e.target.value)}
+            required
+            fullWidth
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#3f51b5",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#1e88e5",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1e88e5",
+                },
+              },
+            }}
+          />
+          <Box display="flex" justifyContent="center" mt={2} gap={2}>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => navigate(-1)}
+            >
+              Regresar
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              Crear Usuario
+            </Button>
+          </Box>
+        </Box>
+      </Paper>
     </Container>
   );
 }
