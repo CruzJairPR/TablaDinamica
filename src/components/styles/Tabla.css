@@ -6,8 +6,30 @@
 .table .MuiDataGrid-columnHeaders {
   --DataGrid-containerBackground: #1976d2;
   color: #f4efef;
-
 }
+.MuiDataGrid-columnHeaderTitleContainer {
+  padding: 3px 8px; /* Ajusta el padding superior/inferior y lateral */
+  display: flex; /* Asegura que los elementos se alineen en línea */
+  align-items: center; /* Centra verticalmente los elementos */
+}
+
+.MuiDataGrid-iconButtonContainer {
+  margin-left: 1px; /* Reduce el margen a la izquierda del botón del icono */
+}
+
+/* Opcional: Si necesitas ajustar aún más los iconos */
+.css-1ckov0h-MuiSvgIcon-root,
+.css-120dh41-MuiSvgIcon-root {
+  margin: 0; /* Asegura que no haya margen adicional en los iconos */
+}
+
+
+.css-1ckov0h-MuiSvgIcon-root {
+  color: white !important; 
+  opacity: 1 !important; 
+  visibility: visible !important; 
+}
+
 .table .MuiDataGrid-sortIcon {
   color: white !important;
   opacity: 1 !important; 

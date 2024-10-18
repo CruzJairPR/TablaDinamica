@@ -159,10 +159,10 @@ function TablaUsuarios() {
         className="table"
           rows={filteredRows}
           columns={[
-            { field: "id", headerName: "ID", width: 100 },
+            { field: "id", headerName: "ID", width: 130 },
             { field: "nombre", headerName: "Nombre", width: 180 },
             { field: "correo", headerName: "Correo", width: 200 },
-            { field: "rol", headerName: "Rol", width: 200 },
+            { field: "rol", headerName: "Rol", width: 170 },
             {
               field: "estado",
               headerName: "Estado",
