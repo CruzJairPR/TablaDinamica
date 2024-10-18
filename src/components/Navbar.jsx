@@ -24,7 +24,6 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
-
 const logout = () => {
   localStorage.removeItem("authToken");
 };
@@ -64,12 +63,13 @@ const Navbar = () => {
   };
 
   const drawerItems = [
-    { text: "Dashboard", icon: <DashboardIcon />, path: "/home" },
+    { text: "Inicio", icon: <DashboardIcon />, path: "/home" },
     { text: "Usuarios", icon: <PeopleIcon />, path: "/home" },
-    { text: "CrearUsuario", icon: <PersonAddIcon />, path: "/profile" },
+    { text: "Crear Usuario", icon: <PersonAddIcon />, path: "/profile" },
   ];
 
-  const DrawerList = (    <Box
+  const DrawerList = (
+    <Box
       sx={{ width: 250 }}
       role="presentation"
       onClick={toggleDrawer(false)}
@@ -93,74 +93,77 @@ const Navbar = () => {
   );
 
   return (
-<Container>
-<AppBar position="static" sx={{ backgroundColor: "#0d47a1", boxShadow: 3 }}>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={toggleDrawer(true)}
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-
-          <Typography
-            variant="h6"
-            noWrap
-            sx={{
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            PANEL DE ADMINISTRACIÓN DE USUARIOS
-          </Typography>
-
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open user menu">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Admin User" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+    <Container>
+      <AppBar
+        position="static"
+        sx={{ backgroundColor: "#0d47a1", boxShadow: 3 }}
+      >
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              onClick={toggleDrawer(true)}
+              sx={{ mr: 2 }}
             >
-              <MenuItem onClick={handleLogout}>
-                <ListItemIcon>
-                  <LogoutIcon fontSize="small" />
-                </ListItemIcon>
-                <Typography textAlign="center">Cerrar Session</Typography>
-              </MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
+              <MenuIcon />
+            </IconButton>
 
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-        {DrawerList}
-      </Drawer>
-    </AppBar>
-</Container>
-  )
+            <Typography
+              variant="h6"
+              noWrap
+              sx={{
+                flexGrow: 1,
+                fontFamily: "monospace",
+                fontWeight: 700,
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              PANEL DE ADMINISTRACIÓN DE USUARIOS
+            </Typography>
+
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open user menu">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Admin User" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem onClick={handleLogout}>
+                  <ListItemIcon>
+                    <LogoutIcon fontSize="small" />
+                  </ListItemIcon>
+                  <Typography textAlign="center">Cerrar Session</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
+          </Toolbar>
+        </Container>
+
+        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+          {DrawerList}
+        </Drawer>
+      </AppBar>
+    </Container>
+  );
 };
 
 export default Navbar;

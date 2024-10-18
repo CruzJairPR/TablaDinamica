@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   Container,
@@ -6,50 +6,42 @@ import {
   CircularProgress,
   Alert,
   Snackbar,
-  Button,
+  Switch,
 } from "@mui/material";
-import Switch from "@mui/material/Switch";
-//Traductor
 import { dataGridEsES } from "./Traducciones";
-//Modales
 import { UserEditModal, ConfirmDeleteModal } from "../TablaUsuarios/Modales";
-//hook
-import { useFetchUsuarios } from "../../hook/useUsuarios2";
-//componentes
 import TablaTitulo from "./TablaTitulo";
 import UserSearch from "./UserSearch";
-import CrearUsuarioButton from "../Buttons";
-//Estilos
+import {
+  CrearUsuarioButton,
+  EditarUsuarioButton,
+  EliminarUsuarioButton,
+} from "../Buttons";
+//CustomHooks
+import { useUserManagement } from "../../hook/useUserManagment";
 import "../../styles/Tabla.css";
 
-
 function TablaUsuarios() {
-  const { rows, loading, error } = useFetchUsuarios();
-  const [filteredRows, setFilteredRows] = useState([]);
+  const {
+    filteredRows,
+    loading,
+    error,
+    searchTerm,
+    selectedRows,
+    openSnackbar,
+    message,
+    handleSearch,
+    handleDeleteUser,
+    handleSaveUser,
+    handleEstadoChange,
+    setSelectedRows,
+    setOpenSnackbar,
+  } = useUserManagement();
+
   const [editUserModal, setEditUserModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    setFilteredRows(rows);
-  }, [rows]);
-
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-    setFilteredRows(
-      rows.filter(
-        (row) =>
-          row.nombre.toLowerCase().includes(term.toLowerCase()) ||
-          row.correo.toLowerCase().includes(term.toLowerCase()) ||
-          row.rol.toLowerCase().includes(term.toLowerCase())
-      )
-    );
-  };
 
   const handleEditUser = (user) => {
     setCurrentUser(user);
@@ -61,27 +53,40 @@ function TablaUsuarios() {
     setConfirmDeleteModal(true);
   };
 
-  const handleDeleteUser = (userId) => {
-    const updatedRows = rows.filter((row) => row.id !== userId);
-    setFilteredRows(updatedRows);
-    setMessage("Usuario eliminado exitosamente");
-    setOpenSnackbar(true);
-    setConfirmDeleteModal(false);
-  };
-
-  const handleSnackbarClose = () => {
-    setOpenSnackbar(false);
-  };
-
-  const handleSaveUser = (updatedUser) => {
-    const updatedRows = rows.map((row) =>
-      row.id === currentUser.id ? { ...row, ...updatedUser } : row
-    );
-    setFilteredRows(updatedRows);
-    setEditUserModal(false);
-    setMessage("Usuario actualizado exitosamente");
-    setOpenSnackbar(true);
-  };
+  const columns = [
+    { field: "id", headerName: "ID", width: 130 },
+    { field: "nombre", headerName: "Nombre", width: 180 },
+    { field: "correo", headerName: "Correo", width: 200 },
+    { field: "rol", headerName: "Rol", width: 170 },
+    {
+      field: "estado",
+      headerName: "Estado",
+      width: 150,
+      renderCell: (params) => (
+        <Switch
+          checked={params.row.estado}
+          onChange={(event) =>
+            handleEstadoChange(params.row.id, event.target.checked)
+          }
+          color="primary"
+        />
+      ),
+    },
+    {
+      field: "acciones",
+      headerName: "Acciones",
+      width: 220,
+      renderCell: (params) => (
+        <div>
+          <EditarUsuarioButton onEdit={handleEditUser} user={params.row} />
+          <EliminarUsuarioButton
+            onDelete={handleOpenDeleteModal}
+            userId={params.row.id}
+          />
+        </div>
+      ),
+    },
+  ];
 
   if (loading) {
     return (
@@ -102,26 +107,16 @@ function TablaUsuarios() {
       </Container>
     );
   }
-  const handleEstadoChange = (userId, isActive) => {
-    const updatedRows = filteredRows.map((row) =>
-      row.id === userId
-        ? { ...row, estado: isActive } 
-        : row
-    );
-    setFilteredRows(updatedRows);
-    setMessage(`Usuario ${isActive ? "activado" : "desactivado"} exitosamente`);
-    setOpenSnackbar(true);
-  };
 
   return (
     <Container>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
-        onClose={handleSnackbarClose}
+        onClose={() => setOpenSnackbar(false)}
       >
         <Alert
-          onClose={handleSnackbarClose}
+          onClose={() => setOpenSnackbar(false)}
           severity="success"
           sx={{ width: "100%" }}
         >
@@ -156,55 +151,9 @@ function TablaUsuarios() {
 
       <Box style={{ height: 400, width: "100%" }}>
         <DataGrid
-        className="table"
+          className="table"
           rows={filteredRows}
-          columns={[
-            { field: "id", headerName: "ID", width: 130 },
-            { field: "nombre", headerName: "Nombre", width: 180 },
-            { field: "correo", headerName: "Correo", width: 200 },
-            { field: "rol", headerName: "Rol", width: 170 },
-            {
-              field: "estado",
-              headerName: "Estado",
-              width: 150,
-              renderCell: (params) => (
-                <Switch
-                  checked={params.row.estado} // Ahora es un booleano
-                  onChange={(event) =>
-                    handleEstadoChange(params.row.id, event.target.checked)
-                  }
-                  color="primary"
-                />
-              ),
-            },
-            {
-              field: "acciones",
-              headerName: "Acciones",
-              width: 220,
-              renderCell: (params) => (
-                <div>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleEditUser(params.row)}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    variant="contained"
-                    style={{
-                      backgroundColor: "red",
-                      color: "white",
-                      marginLeft: "10px",
-                    }}
-                    onClick={() => handleOpenDeleteModal(params.row.id)}
-                  >
-                    Eliminar
-                  </Button>
-                </div>
-              ),
-            },
-          ]}
+          columns={columns}
           initialState={{
             pagination: {
               paginationModel: { pageSize: 5, page: 0 },

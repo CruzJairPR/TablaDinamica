@@ -1,30 +1,61 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom'; 
+import React from "react";
+import { Button, IconButton, Tooltip } from "@mui/material";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useNavigate } from "react-router-dom";
 
-const CrearUsuarioButton = () => {
-  const navigate = useNavigate(); 
+export const CrearUsuarioButton = () => {
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/profile'); 
+    navigate("/profile");
   };
+
   return (
-    <div>
-      <Button
-        variant="contained"
-        color="primary"
-        size="medium"
-        
-        sx={{
-          height: '55px', 
-          fontSize: '16px', 
-          width:'200px'        }}
-          onClick={handleClick}
-      >
-        Crear Usuario
-      </Button>
-    </div>
+    <Button
+      variant="contained"
+      color="primary"
+      size="medium"
+      startIcon={<PersonAddIcon />}
+      sx={{
+        height: "55px",
+        fontSize: "16px",
+        width: "200px",
+      }}
+      onClick={handleClick}
+    >
+      Crear Usuario
+    </Button>
   );
 };
 
-export default CrearUsuarioButton;
+export const EditarUsuarioButton = ({ onEdit, user }) => {
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      size="small"
+      startIcon={<EditIcon />}
+      onClick={() => onEdit(user)}
+      sx={{ fontSize: "12px", padding: "4px 8px" }}
+    >
+      Editar
+    </Button>
+  );
+};
+
+export const EliminarUsuarioButton = ({ onDelete, userId }) => {
+  return (
+    <Button
+      variant="contained"
+      color="error"
+      size="small"
+      startIcon={<DeleteIcon />}
+      onClick={() => onDelete(userId)}
+      sx={{ fontSize: "12px", padding: "4px 8px", marginLeft: "8px" }}
+    >
+      Eliminar
+    </Button>
+  );
+};
