@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import * as React from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
   TextField,
   Button,
@@ -8,43 +8,45 @@ import {
   Typography,
   Alert,
   Box,
-  Link 
-} from '@mui/material';
-import authService from '../server/authService';
+  Link,
+} from "@mui/material";
+import authService from "../server/service/authService";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [correo, setCorreo] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [correo, setCorreo] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); 
+    setError("");
 
     try {
-      await authService.login(correo, password); 
-      navigate('/home');
+      await authService.login(correo, password);
+      navigate("/home");
     } catch (err) {
-      setError(err.response?.data?.mensaje || 'Error en el inicio de sesión');
+      setError(err.response?.data?.mensaje || "Error en el inicio de sesión");
     }
   };
 
   return (
     <Container maxWidth="sm" sx={{ mt: 8 }}>
-      <Box 
+      <Box
         sx={{
-          bgcolor: '#fff',
+          bgcolor: "#fff",
           borderRadius: 2,
           boxShadow: 3,
           p: 4,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold' }}>Iniciar sesión</Typography>
-        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
+          Iniciar sesión
+        </Typography>
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           <TextField
             required
             fullWidth
@@ -64,23 +66,34 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             sx={{ mb: 2 }}
           />
-          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-          <Button 
-            type="submit" 
-            variant="contained" 
-            color="primary" 
-            fullWidth 
-            sx={{ padding: '12px', fontWeight: 'bold' }}
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ padding: "12px", fontWeight: "bold" }}
           >
             Iniciar sesión
           </Button>
         </form>
-        <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Box
+          sx={{
+            mt: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <Link href="#" variant="body2" sx={{ mb: 1 }}>
             ¿Olvidaste tu contraseña?
           </Link>
           <Typography variant="body2" sx={{ mb: 1 }}>
-            ¿No tienes una cuenta? 
+            ¿No tienes una cuenta?
             <Link href="#" variant="body2" sx={{ ml: 1 }}>
               Crear cuenta
             </Link>
@@ -89,6 +102,6 @@ const Login = () => {
       </Box>
     </Container>
   );
-}
+};
 
 export default Login;

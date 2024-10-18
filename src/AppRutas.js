@@ -5,7 +5,7 @@ import Home from './page/Home';
 import Profile from './page/Profile';
 import Login from './page/Login';
 
-function App() {
+function AppRutas() {
   return (
     <Router>
       <Routes>
@@ -17,4 +17,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppRutas;

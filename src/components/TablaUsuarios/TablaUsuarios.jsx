@@ -19,8 +19,8 @@ import { useFetchUsuarios } from "../../hook/useUsuarios2";
 import TablaTitulo from "./TablaTitulo";
 import UserSearch from "./UserSearch";
 import CrearUsuarioButton from "../Buttons";
-//Estilo
-import "../styles/Tabla.css";
+//Estilos
+import "../../styles/Tabla.css";
 
 
 function TablaUsuarios() {

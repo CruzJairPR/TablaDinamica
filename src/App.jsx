@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { fetchUsuarios, login } from './usuarioService';
+import React, { useEffect, useState } from "react";
+import { fetchUsuarios, login } from "./usuarioService";
 
 const App = () => {
   const [usuarios, setUsuarios] = useState([]);
-  const [correo, setCorreo] = useState('');
-  const [pw, setPw] = useState('');
+  const [correo, setCorreo] = useState("");
+  const [pw, setPw] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = async () => {
@@ -13,8 +13,8 @@ const App = () => {
       setIsLoggedIn(true);
       obtenerUsuarios();
     } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      alert('Credenciales inválidas');
+      console.error("Error al iniciar sesión:", error);
+      alert("Credenciales inválidas");
     }
   };
 
@@ -23,7 +23,7 @@ const App = () => {
       const data = await fetchUsuarios();
       setUsuarios(data);
     } catch (error) {
-      console.error('Error al obtener usuarios:', error);
+      console.error("Error al obtener usuarios:", error);
     }
   };
 
@@ -56,8 +56,10 @@ const App = () => {
 
       {isLoggedIn && (
         <ul>
-          {usuarios.map(usuario => (
-            <li key={usuario.id}>{usuario.nombre} - {usuario.rol}</li>
+          {usuarios.map((usuario) => (
+            <li key={usuario.id}>
+              {usuario.nombre} - {usuario.rol}
+            </li>
           ))}
         </ul>
       )}
